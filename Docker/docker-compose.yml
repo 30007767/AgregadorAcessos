@@ -23,7 +23,7 @@ services:
     image: openjdk:oraclelinux8
     container_name: openjdk
     volumes:
-      - ../DataAggregator:/usr/src/agregador 
+      - ../bin:/usr/src/agregador 
     working_dir: /usr/src/agregador/target
     command: java -jar DataAggregator-1.0.jar    
     depends_on:
