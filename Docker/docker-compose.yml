@@ -1,0 +1,33 @@
+---
+version: "2.1"
+services:
+  mysql:
+    container_name: mysql2
+    image: mysql:8.0.26
+    hostname: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'ensinosuperior'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:      
+      - ../sql.init/:/docker-entrypoint-initdb.d/
+  openjdk:
+    hostname: openjdk
+    image: openjdk:oraclelinux8
+    container_name: openjdk
+    volumes:
+      - ../DataAggregator:/usr/src/agregador 
+    working_dir: /usr/src/agregador/target
+    command: java -jar DataAggregator-1.0.jar    
+    depends_on:
+      - mysql    
+volumes:  
+  mysqldata:
+    driver: local
