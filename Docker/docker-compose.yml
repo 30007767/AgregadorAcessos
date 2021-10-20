@@ -1,8 +1,8 @@
 ---
-version: "2.1"
+version: "3.0"
 services:
   mysql:
-    container_name: mysql2
+    container_name: mysql
     image: mysql:8.0.26
     hostname: mysql
     restart: always
@@ -18,16 +18,22 @@ services:
       - '3306:3306'
     volumes:      
       - ../sql.init/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 2s
+      retries: 3
+      start_period: 5s
   openjdk:
     hostname: openjdk
     image: openjdk:oraclelinux8
     container_name: openjdk
     volumes:
-      - ../bin:/usr/src/agregador 
-    working_dir: /usr/src/agregador/target
+      - ../bin:/usr/src/DataAgregator
+    working_dir: /usr/src/DataAgregator
     command: java -jar DataAggregator-1.0.jar    
     depends_on:
-      - mysql    
+      mysql:
+        condition: service_healthy
 volumes:  
   mysqldata:
     driver: local
